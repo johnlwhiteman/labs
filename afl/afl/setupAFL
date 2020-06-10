@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+sudo cat /dev/null
+git clone https://github.com/mirrorer/afl.git
+cd ./afl
+make
+sudo make install
+cd ../
