@@ -17,9 +17,9 @@ function updateMake() {
     sed -i 's/CPP\_FOR\_BUILD \= gcc \-E/CPP_\FOR\_BUILD \= afl-gcc \-E/' $MPATH 
 }
 
-sudo apt-get install libtool m4 automake autoconf pkg-config libpcre3-dev libbz2-dev  -y
+sudo apt-get install gnuplot libtool m4 automake autoconf pkg-config libpcre3-dev libbz2-dev  -y
 ./stopServer
-rm -rf *.tar.gz ./$NAME ./lighttpd* ./input ./output /tmp/*.conf /tmp/*.html
+./cleanUp
 wget $URL
 tar -xvf ligh*
 rm -f *.tar.gz
@@ -34,7 +34,7 @@ cd ../
 make 
 cp ./src/lighttpd ../ 
 cd ../
-mkdir ./input ./output
+mkdir ./input ./output ./charts
 cp -f ./src/doc/config/conf.d/access_log.conf /tmp 
 cp -f ./src/doc/config/conf.d/debug.conf /tmp
 cp -f ./src/doc/config/conf.d/mime.conf /tmp
@@ -55,4 +55,7 @@ sed -i 's/conf.d\/mime.conf/\/tmp\/mime.conf/' lighttpd.conf
 sed -i 's/conf.d\/dirlisting.conf/\/tmp\/dirlisting.conf/' lighttpd.conf
 sed -i 's/\/htdocs//' lighttpd.conf 
 mv ./lighttpd.conf ./input/
+sudo sh -c 'echo core >/proc/sys/kernel/core_pattern'
+ulimit -c unlimited 
 echo '<h1>Let us Fuzz This Thing!</h1>' >/tmp/index.html
+

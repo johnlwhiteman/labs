@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+DIR=$(pwd)
+EDIR=${DIR//\//\\/}
+URL=https://github.com/fuzzstati0n/fuzzgoat.git
+sudo apt-get install gnuplot -y
+./cleanUp
+git clone $URL 
+mv ./fuzzgoat ./src
+cd src
+make
+cd ../
+mkdir ./input ./output ./charts
+cp ./src/fuzzgoat ./
+cp ./src/seed ./input/seed.json

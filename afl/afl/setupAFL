@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 sudo cat /dev/null
+sudo apt-get install gnuplot -y
+./cleanUp
 git clone https://github.com/mirrorer/afl.git
-cd ./afl
+mv ./afl ./src
+cd ./src
 make
 sudo make install
 cd ../

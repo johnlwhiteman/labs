@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-./stopServer
 sudo sh -c 'echo core >/proc/sys/kernel/core_pattern' # Support core dumps
 ulimit -c unlimited # Core can be unlimited size 
-afl-fuzz -i ./input -o ./output ./lighttpd -i 1 -D -tt -f @@
-#afl-fuzz -i ./input -o ./output ./lighttpd  -D -f @@
+afl-fuzz -i ./input -o ./output ./fuzzgoat @@

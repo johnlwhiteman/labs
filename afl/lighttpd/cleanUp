@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-rm -rf *.tar.gz ./src ./lighttpd* ./input ./output /tmp/*.conf /tmp/*.html
-
+rm -rf *.tar.gz ./src ./lighttpd* ./input ./output ./charts /tmp/*.conf /tmp/*.html
