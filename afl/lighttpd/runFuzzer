@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+./stopServer
+afl-fuzz -i ./input -o ./output ./lighttpd -i 1 -D -tt -f @@
+#afl-fuzz -i ./input -o ./output ./lighttpd  -D -f @@

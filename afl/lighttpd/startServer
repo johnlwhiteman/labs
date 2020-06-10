@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+./stopServer
+./lighttpd -f ./input/lighttpd.conf 
+ps -ef | grep lighttpd

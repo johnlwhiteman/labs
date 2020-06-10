@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+DIR=$(pwd)
+EDIR=${DIR//\//\\/}
+URL=https://download.lighttpd.net/lighttpd/releases-1.4.x/lighttpd-1.4.53.tar.gz
+BACKUP=./Makefile-BACKUP
+NAME=src
+
+function updateMake() { 
+    MPATH=$1
+    MPATHBU=$1-BACKUP 
+    if [[ ! -f "$MPATHBU" ]]; then
+        cp $MPATH $MPATHBU
+    fi
+    sed -i 's/CC \= gcc/CC \= afl-gcc/' $MPATH 
+    sed -i 's/CC\_FOR\_BUILD \= gcc/CC_\FOR\_BUILD \= afl-gcc/' $MPATH 
+    sed -i 's/CPP \= gcc \-E/CPP \= afl-gcc \-E/' $MPATH
+    sed -i 's/CPP\_FOR\_BUILD \= gcc \-E/CPP_\FOR\_BUILD \= afl-gcc \-E/' $MPATH 
+}
+
+sudo apt-get install libtool m4 automake autoconf pkg-config libpcre3-dev libbz2-dev  -y
+./stopServer
+rm -rf *.tar.gz ./$NAME ./lighttpd* ./input ./output /tmp/*.conf /tmp/*.html
+wget $URL
+tar -xvf ligh*
+rm -f *.tar.gz
+VNAME=$(ls | grep lighttpd-)
+mv $VNAME $NAME
+cd ./$NAME
+./autogen.sh && ./configure
+updateMake ./Makefile
+cd ./src
+updateMake ./Makefile
+cd ../
+make 
+cp ./src/lighttpd ../ 
+cd ../
+mkdir ./input ./output
+cp -f ./src/doc/config/conf.d/access_log.conf /tmp 
+cp -f ./src/doc/config/conf.d/debug.conf /tmp
+cp -f ./src/doc/config/conf.d/mime.conf /tmp
+cp -f ./src/doc/config/conf.d/dirlisting.conf /tmp 
+cp -f ./src/doc/config/modules.conf /tmp 
+cp -f ./src/doc/config/lighttpd.conf ./
+sed -i 's/\/var\/log\/lighttpd/\/tmp/' lighttpd.conf
+sed -i 's/\/var\/run/\/tmp/' lighttpd.conf
+sed -i 's/\/srv\/www/\/tmp/' lighttpd.conf
+sed -i 's/server.port \= 80/server.port \= 8080/' lighttpd.conf
+sed -i 's/server.username  = "lighttpd"/server.username = "kali"/' lighttpd.conf
+sed -i 's/server.groupname = "lighttpd"/server.groupname = "kali"/' lighttpd.conf
+sed -i 's/server.use-ipv6 = "enable"/server.use-ipv6 = "disable"/' lighttpd.conf
+sed -i 's/modules.conf/\/tmp\/modules.conf/' lighttpd.conf
+sed -i 's/conf.d\/access_log.conf/\/tmp\/access_log.conf/' lighttpd.conf
+sed -i 's/conf.d\/debug.conf/\/tmp\/debug.conf/' lighttpd.conf
+sed -i 's/conf.d\/mime.conf/\/tmp\/mime.conf/' lighttpd.conf
+sed -i 's/conf.d\/dirlisting.conf/\/tmp\/dirlisting.conf/' lighttpd.conf
+sed -i 's/\/htdocs//' lighttpd.conf 
+mv ./lighttpd.conf ./input/
+echo '<h1>Let us Fuzz This Thing!</h1>' >/tmp/index.html
